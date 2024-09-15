@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.15.0",
-    "@nrv23/jobber-shared": "^0.0.2",
+    "@nrv23/jobber-shared": "^0.0.4",
     "amqplib": "^0.10.4",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
