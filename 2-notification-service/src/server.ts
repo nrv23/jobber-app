@@ -4,23 +4,24 @@ import http from 'http';
 import { Logger } from 'winston';
 import { winstonLogger } from '@nrv23/jobber-shared';
 import { Application } from 'express';
+import { Channel } from 'amqplib';
 
-
+import { consumeAuthEmailMessages } from './queues/consumer';
 import { config } from './config';
 import { healthRoutes } from './routes';
 import { connect } from './elasticsearch';
+import { createConnection } from './queues/connection';
 
 const SERVER_PORT = config.configProperties.SERVER_PORT;
 const log: Logger = winstonLogger(`${config.configProperties.ELASTIC_SEARCH_URL}`,'notifiactionServer','debug');
 
 async function startQueues(): Promise<void> {
-
+    const channel: Channel = await createConnection() as Channel;
+    await consumeAuthEmailMessages(channel!);
 }
 
 async function startElasticSearch() : Promise<void> {
     await connect();
-
-
 }
 
 function startSerever(app: Application): void {
