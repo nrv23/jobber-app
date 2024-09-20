@@ -21,17 +21,17 @@ async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
         const { queue } = await channel.assertQueue(queueName, {
             durable: true,
             autoDelete: false // que se elimine una vez qye se marque como procesado
-            
+
         });
 
-        await channel.bindQueue(queue,exchangeName,routingkey);
+        await channel.bindQueue(queue, exchangeName, routingkey);
 
-        channel.consume(queue,async (msg: ConsumeMessage | null) => {
+        channel.consume(queue, async (msg: ConsumeMessage | null) => {
             console.log(JSON.parse(msg!.content.toString()));
 
 
             const { receiverEmail, username, verifyLink, resetLink, template } = JSON.parse(msg!.content.toString()).messageDetails;
-        
+
             // send emails
             const locals: IEmailLocals = {
                 appLink: `${config.configProperties.CLIENT_URL}`,
@@ -40,15 +40,15 @@ async function consumeAuthEmailMessages(channel: Channel): Promise<void> {
                 verifyLink,
                 resetLink
             };
-            await sendEmail(template,receiverEmail, locals);
+            await sendEmail(template, receiverEmail, locals);
             // ack message
             channel.ack(msg!);
 
-        },{
+        }, {
             noAck: false
         });
 
-        
+
     } catch (error) {
         log.log('error', 'NotificationService error Consumer consumeAuthEmailMessages method()', error);
 
@@ -67,20 +67,78 @@ async function consumeOrderEmailMessages(channel: Channel): Promise<void> {
         const { queue } = await channel.assertQueue(queueName, {
             durable: true,
             autoDelete: false // que se elimine una vez qye se marque como procesado
-            
+
         });
 
-        await channel.bindQueue(queue,exchangeName,routingkey);
+        await channel.bindQueue(queue, exchangeName, routingkey);
 
-        channel.consume(queue,async (msg: ConsumeMessage | null) => {
+        channel.consume(queue, async (msg: ConsumeMessage | null) => {
             console.log(JSON.parse(msg!.content.toString()));
-        },{
+
+            const {
+                receiverEmail,
+                username,
+                template,
+                sender,
+                offerLink,
+                amount,
+                buyerUsername,
+                sellerUsername,
+                title,
+                description,
+                deliveryDays,
+                orderId,
+                orderDue,
+                requirements,
+                orderUrl,
+                originalDate,
+                newDate,
+                reason,
+                subject,
+                header,
+                type,
+                message,
+                serviceFee,
+                total
+              } = JSON.parse(msg!.content.toString());
+              const locals: IEmailLocals = {
+                appLink: `${config.configProperties.CLIENT_URL}`,
+                appIcon: 'https://i.ibb.co/Kyp2m0t/cover.png',
+                username,
+                sender,
+                offerLink,
+                amount,
+                buyerUsername,
+                sellerUsername,
+                title,
+                description,
+                deliveryDays,
+                orderId,
+                orderDue,
+                requirements,
+                orderUrl,
+                originalDate,
+                newDate,
+                reason,
+                subject,
+                header,
+                type,
+                message,
+                serviceFee,
+                total
+              };
+              if (template === 'orderPlaced') {
+                await sendEmail('orderPlaced', receiverEmail, locals);
+                await sendEmail('orderReceipt', receiverEmail, locals);
+              } else {
+                await sendEmail(template, receiverEmail, locals);
+              }
+
+        }, {
             noAck: false
         });
 
-        // send emails
 
-        // ack message
     } catch (error) {
         log.log('error', 'NotificationService error Consumer consumeOrderEmailMessages method()', error);
 

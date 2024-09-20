@@ -2,7 +2,7 @@ import 'express-async-errors';
 import http from 'http';
 
 import { Logger } from 'winston';
-import { IEmailMessageDetails, winstonLogger } from '@nrv23/jobber-shared';
+import { winstonLogger } from '@nrv23/jobber-shared';
 import { Application } from 'express';
 import { Channel } from 'amqplib';
 
@@ -21,7 +21,7 @@ async function startQueues(): Promise<void> {
     await consumeAuthEmailMessages(channel!);
     await consumeOrderEmailMessages(channel!);
 
-    const verifyLink = `${config.configProperties.CLIENT_URL}/confirm_email?v_token=1323123123`;
+    /*const verifyLink = `${config.configProperties.CLIENT_URL}/confirm_email?v_token=1323123123`;
     const messageDetails: IEmailMessageDetails = {
         verifyLink,
         template:'verifyEmail',
@@ -30,7 +30,7 @@ async function startQueues(): Promise<void> {
 
     await channel.assertExchange('jobber-email-notification','direct');
     const message = JSON.stringify({messageDetails});
-    channel.publish('jobber-email-notification','auth-email', Buffer.from(message));
+    channel.publish('jobber-email-notification','auth-email', Buffer.from(message));*/
 }
 
 async function startElasticSearch() : Promise<void> {
