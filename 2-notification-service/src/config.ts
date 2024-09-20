@@ -14,6 +14,8 @@ class Config {
     private RABBITMQ_ENDPOINT: string | undefined;
     private ELASTIC_SEARCH_URL: string | undefined;
     private SERVER_PORT: number | undefined;
+    private HOST_EMAIL_PORT: number | undefined;
+    private HOST_EMAIL_SMTP: string | undefined;
 
     constructor() {
         this.NODE_ENV = process.env.NODE_ENV;
@@ -23,6 +25,8 @@ class Config {
         this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT;
         this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL;
         this.SERVER_PORT = +process.env.SERVER_PORT!;
+        this.HOST_EMAIL_PORT = +process.env.HOST_EMAIL_PORT!;
+        this.HOST_EMAIL_SMTP = process.env.HOST_EMAIL_SMTP!;
     }
 
 
@@ -36,6 +40,8 @@ class Config {
             RABBITMQ_ENDPOINT: this.RABBITMQ_ENDPOINT,
             ELASTIC_SEARCH_URL: this.ELASTIC_SEARCH_URL,
             SERVER_PORT: this.SERVER_PORT,
+            HOST_EMAIL_PORT: this.HOST_EMAIL_PORT,
+            HOST_EMAIL_SMTP: this.HOST_EMAIL_SMTP
         };
     }
 }
