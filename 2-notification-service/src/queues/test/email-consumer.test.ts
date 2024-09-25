@@ -2,7 +2,7 @@ import * as connection from '@notifications/queues/connection';
 import amqp from 'amqplib';
 
 import { consumeAuthEmailMessages, consumeOrderEmailMessages } from '../consumer';
-
+// creacion de mocks
 jest.mock('@notifications/queues/connection');
 jest.mock('amqplib');
 jest.mock('@nrv23/jobber-shared');
@@ -19,7 +19,7 @@ describe('Email consumer ',() => {
 
     describe('consumeAuthEmailMessages method', () => {
         it('should be called', async () => {
-          const channel = {
+          const channel = { // crear mock de canal
             assertExchange: jest.fn(),
             publish: jest.fn(),
             assertQueue: jest.fn(),
