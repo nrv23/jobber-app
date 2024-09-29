@@ -11,7 +11,7 @@ import compression from 'compression';
 import { StatusCodes } from 'http-status-codes';
 import { config } from '@gateway/config';
 
-const SERVER_PORT = 4005;
+const SERVER_PORT = config.configProperties.SERVER_PORT;
 const log: Logger = winstonLogger(`${config.configProperties.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
 
 export class GateWayServer {
