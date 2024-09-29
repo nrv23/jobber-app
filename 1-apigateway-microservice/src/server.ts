@@ -10,6 +10,8 @@ import { Logger } from 'winston';
 import compression from 'compression';
 import { StatusCodes } from 'http-status-codes';
 import { config } from '@gateway/config';
+import { elasticSearch } from '@gateway/elasticsearch';
+import { appRoutes } from './routes';
 
 const SERVER_PORT = config.configProperties.SERVER_PORT;
 const log: Logger = winstonLogger(`${config.configProperties.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -26,7 +28,7 @@ export class GateWayServer {
     public start(): void {
         this.securityMiddlware(this.app);
         this.standardMiddlware(this.app);
-        this.routesMiddleware();
+        this.routesMiddleware(this.app);
         this.errorHandler(this.app);
         this.startElasticSearch();
         // inicia el servidor
@@ -73,12 +75,12 @@ export class GateWayServer {
         }));
     }
 
-    private routesMiddleware(): void {
-
+    private routesMiddleware(app:Application): void {
+        appRoutes(app);
     }
 
     private startElasticSearch(): void {
-
+        elasticSearch.checkConnection().then();
     }
 
     private errorHandler(app: Application): void {
