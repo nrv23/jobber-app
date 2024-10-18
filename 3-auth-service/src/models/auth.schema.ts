@@ -83,6 +83,10 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> & AuthM
         {
             unique: true,
             fields: ['username']
+        },
+        {
+            unique: true,
+            fields: ['emailVerificationToken']
         }
     ]
 }) as  ModelDefined<IAuthDocument, AuthUserCreationAttributes> & AuthModelInstanceMethods;
@@ -96,12 +100,10 @@ AuthModel.addHook('beforeCreate', async (auth: Model<IAuthDocument>) => {
 
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 AuthModel.prototype.comparePassword = async function (password: string, hashedPassword: string): Promise<boolean> {
     return await compare(password, hashedPassword);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 AuthModel.prototype.hassPassword = async function (password: string): Promise<string> {
     return await hash(password, SALT_ROUND);
 };

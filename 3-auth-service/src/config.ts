@@ -30,6 +30,8 @@ class Config {
   public CLIENT_URL: string | undefined;
   public ELASTIC_SEARCH_URL: string | undefined;
   public SERVER_PORT: number | undefined;
+  public EXCHANGE_NAME : string | undefined;
+  public ROUTING_KEY : string | undefined;
   constructor() {
     this.NODE_ENV = process.env.NODE_ENV || '';
     this.JWT_TOKEN = process.env.JWT_TOKEN || '';
@@ -43,6 +45,10 @@ class Config {
     this.CLIENT_URL = process.env.CLIENT_URL || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
     this.SERVER_PORT = +process.env.SERVER_PORT! || 4003;
+    // ------------
+    this.EXCHANGE_NAME = process.env.EXCHANGE_NAME!;
+    this.ROUTING_KEY = process.env.ROUTING_KEY!;
+
   }
 
   public cloudinaryConfig(): void {
