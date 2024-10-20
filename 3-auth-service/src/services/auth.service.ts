@@ -3,6 +3,7 @@ import AuthModel from '@auth/models/auth.schema';
 import { publishDirectMessage } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
 import { firstLetterUppercase, IAuthBuyerMessageDetails, IAuthDocument } from '@nrv23/jobber-shared';
+import { sign } from 'jsonwebtoken';
 import { lowerCase, omit } from 'lodash';
 import { Model, Op } from 'sequelize';
 
@@ -74,3 +75,59 @@ export async function getAuthUserByVerificationToken(token: string): Promise<IAu
 
     return user.dataValues;
 }
+
+
+export async function getAuthUserByPasswordToken(token: string): Promise<IAuthDocument> {
+    const user: Model<IAuthDocument> = await AuthModel.findOne({
+        where: {
+            [Op.and]: [{ passwordResetToken: token }, {
+                passwordResetExpires: {
+                    [Op.gt]: new Date()
+                }
+            }]
+        }
+    }) as Model;
+
+    return user.dataValues;
+}
+
+
+export async function updateVerifyEmailField(id: number, emailVerified: number, emailVerificationToken: string): Promise<void> {
+    await AuthModel.update({
+        emailVerificationToken,
+        emailVerified
+    },
+        {
+            where: { id }
+        }
+    );
+} 
+
+export async function updatePasswordToken(id: number, token: string, tokenExpiration: Date): Promise<void> {
+    await AuthModel.update({
+        passwordResetToken: token,
+        passwordResetExpires: tokenExpiration
+    },
+        {
+            where: { id }
+        }
+    );
+} 
+
+export async function updatePassword(id: number, newPass: string): Promise<void> {
+    await AuthModel.update({
+        passwordResetToken: '',
+        passwordResetExpires: new Date(),
+        password: newPass
+    },
+        {
+            where: { id }
+        }
+    );
+} 
+
+
+export function signToken(id: number, email: string, username: string): string {
+    
+    return sign({id, email, username},config.JWT_TOKEN!);
+} 
