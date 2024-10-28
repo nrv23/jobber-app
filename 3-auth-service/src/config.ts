@@ -32,6 +32,8 @@ class Config {
   public SERVER_PORT: number | undefined;
   public EXCHANGE_NAME : string | undefined;
   public ROUTING_KEY : string | undefined;
+  public BASE_PATH: string | undefined;
+
   constructor() {
     this.NODE_ENV = process.env.NODE_ENV || '';
     this.JWT_TOKEN = process.env.JWT_TOKEN || '';
@@ -48,6 +50,7 @@ class Config {
     // ------------
     this.EXCHANGE_NAME = process.env.EXCHANGE_NAME!;
     this.ROUTING_KEY = process.env.ROUTING_KEY!;
+    this.BASE_PATH = process.env.BASE_PATH!;
 
   }
 

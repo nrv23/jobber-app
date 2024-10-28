@@ -45,7 +45,7 @@ export async function getAuthUserByUsernameOrEmail(username: string, email: stri
         }
     }) as Model;
 
-    return user.dataValues;
+    return user?.dataValues;
 }
 
 export async function getUserByUsername(username: string): Promise<IAuthDocument> {

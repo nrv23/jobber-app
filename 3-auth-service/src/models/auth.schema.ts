@@ -60,7 +60,7 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> & AuthM
     },
     createdAt: {
         type: DataTypes.DATE,
-        defaultValue: Date.now()
+        defaultValue: new Date()
     },
     passwordResetToken: {
         type: DataTypes.STRING,

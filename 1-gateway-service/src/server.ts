@@ -11,8 +11,8 @@ import compression from 'compression';
 import { StatusCodes } from 'http-status-codes';
 import { config } from '@gateway/config';
 import { elasticSearch } from '@gateway/elasticsearch';
-
-import { appRoutes } from './routes';
+import { appRoutes } from '@gateway/routes';
+import { axiosAuthInstance } from '@gateway/services/api/auth.server';
 
 const SERVER_PORT = config.configProperties.SERVER_PORT;
 const log: Logger = winstonLogger(`${config.configProperties.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -63,6 +63,19 @@ export class GateWayServer {
             credentials: true, // el token viene en el cookie y permite envio de cabeceras para autenticacion o certificados ssl
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
         }));
+
+        //
+
+        app.use((req: Request, _: Response, next: NextFunction)=> {
+
+            if(req.session?.jwt) {
+                axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${ req.session.jwt}`;
+            }
+            
+            next();
+        });
+
+       
     }
 
     private standardMiddlware(app: Application): void {

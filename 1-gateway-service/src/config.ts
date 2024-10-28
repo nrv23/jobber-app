@@ -28,6 +28,8 @@ class Config {
     
     private REVIEW_BASE_URL: string | undefined;
 
+    private BASE_URL: string | undefined;
+
     constructor() {
         this.NODE_ENV = process.env.NODE_ENV;
         this.JWT_TOKEN = process.env.JWT_TOKEN!;
@@ -43,6 +45,7 @@ class Config {
         this.MESSAGE_BASE_URL = process.env.MESSAGE_BASE_URL!;
         this.ORDER_BASE_URL = process.env.ORDER_BASE_URL!;
         this.REVIEW_BASE_URL = process.env.REVIEW_BASE_URL!;
+        this.BASE_URL = process.env.BASE_URL!;
 
     }
 
@@ -65,6 +68,7 @@ class Config {
             MESSAGE_BASE_URL: this.MESSAGE_BASE_URL,
             REVIEW_BASE_URL: this.REVIEW_BASE_URL,
             ORDER_BASE_URL: this.ORDER_BASE_URL,
+            BASE_URL: this.BASE_URL,
         };
     }
 }

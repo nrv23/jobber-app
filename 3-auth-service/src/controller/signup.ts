@@ -72,3 +72,4 @@ export async function create(req: Request, res: Response): Promise<void> {
     user: result
   });
 }
+
