@@ -9,7 +9,8 @@ class AuthService {
     axiosService: AxiosService;
 
     constructor() {
-        this.axiosService = new AxiosService(`${config.configProperties.AUTH_BASE_URL!}/api/auth/v1`, 'auth');
+        const url = `${config.configProperties.AUTH_BASE_URL!}/api/auth/v1`;
+        this.axiosService = new AxiosService(url, 'auth');
         axiosAuthInstance = this.axiosService.axios;
     }
 
