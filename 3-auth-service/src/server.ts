@@ -22,8 +22,8 @@ export let authChannel: Channel;
 
 
 export async function start(app: Application): Promise<void> {
-    securityMiddleware(app);
     standardMiddlware(app);
+    securityMiddleware(app);
     routesMiddleware(app);
     await startQueues(); // conectar con rabbitmq
     await startElasticSearch(); // conectar con elasticsearch para ver los logs
@@ -56,7 +56,7 @@ function securityMiddleware(app: Application) {
 }
 
 function standardMiddlware(app: Application): void {
-    app.use(compression()); // comprirmir los request entrantes 
+    
     app.use(json({
         limit: '200mb' // permitir un tamaño maximo de 200 megas por peticion
     })); //
@@ -64,6 +64,7 @@ function standardMiddlware(app: Application): void {
         extended: true,
         limit: '200mb'
     }));
+    app.use(compression()); // comprirmir los request entrantes 
 } 
 
 function routesMiddleware(app: Application): void {

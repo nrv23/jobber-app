@@ -27,8 +27,8 @@ export class GateWayServer {
 
 
     public start(): void {
-        this.securityMiddlware(this.app);
         this.standardMiddlware(this.app);
+        this.securityMiddlware(this.app);
         this.routesMiddleware(this.app);
         this.errorHandler(this.app);
         this.startElasticSearch();
@@ -79,7 +79,7 @@ export class GateWayServer {
     }
 
     private standardMiddlware(app: Application): void {
-        app.use(compression()); // comprirmir los request entrantes 
+       
         app.use(json({
             limit: '200mb' // permitir un tamaño maximo de 200 megas por peticion
         })); //
@@ -87,6 +87,7 @@ export class GateWayServer {
             extended: true,
             limit: '200mb'
         }));
+        app.use(compression()); // comprirmir los request entrantes 
     }
 
     private routesMiddleware(app:Application): void {

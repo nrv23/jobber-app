@@ -19,7 +19,7 @@ export async function create(req: Request, res: Response): Promise<void> {
     throw new BadRequestError(error.details[0].message, 'signup controller');
   }
 
-  const { username, email, password, country, profilePicture } = req.body;
+  const { username, email, password, country } = req.body;
 
   const checkIfUserExits: IAuthDocument = await getAuthUserByUsernameOrEmail(username, email);
 
@@ -29,7 +29,7 @@ export async function create(req: Request, res: Response): Promise<void> {
 
   const profilePublicId = uuid();
   
-  const uploadResult: UploadApiResponse = (await config.cloudinaryConfig().uploads(profilePicture.replace(/^data:image\/\w+;base64,/, ''), `${profilePublicId}`, true, true)) as UploadApiResponse;
+  const uploadResult: UploadApiResponse = (await config.cloudinaryConfig().uploads(req.file!.path, `${profilePublicId}`, true, true)) as UploadApiResponse;
 
   if (!uploadResult.public_id) {
     throw new BadRequestError(`File upload error: ${JSON.stringify(uploadResult)}.  Try again`, 'signup controller create() method error');
