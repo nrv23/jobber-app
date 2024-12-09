@@ -74,6 +74,7 @@ export async function create(req: Request, res: Response): Promise<void> {
     user: result
   });
   } catch (error) {
+    console.log({error});
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
      error
     });

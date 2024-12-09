@@ -12,7 +12,7 @@ import { StatusCodes } from 'http-status-codes';
 import { config } from '@gateway/config';
 import { elasticSearch } from '@gateway/elasticsearch';
 import { appRoutes } from '@gateway/routes';
-import { axiosAuthInstance } from '@gateway/services/api/auth.server';
+
 
 const SERVER_PORT = config.configProperties.SERVER_PORT;
 const log: Logger = winstonLogger(`${config.configProperties.ELASTIC_SEARCH_URL}`, 'apiGatewayServer', 'debug');
@@ -65,16 +65,6 @@ export class GateWayServer {
         }));
 
         //
-
-        app.use((req: Request, _: Response, next: NextFunction)=> {
-
-            if(req.session?.jwt) {
-                axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${ req.session.jwt}`;
-            }
-            
-            next();
-        });
-
        
     }
 
