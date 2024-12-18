@@ -39,7 +39,7 @@ function securityMiddleware(app: Application) {
     app.use(helmet());
     app.use(cors({
         origin: [config.API_GATEWAY_URL!],
-        credentials: true,
+        // credentials: true,
         methods: ['GET', 'POST', 'PUT', 'OPTIONS', 'DELETE']
     }));
 

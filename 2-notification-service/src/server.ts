@@ -55,7 +55,7 @@ function startSerever(app: Application): void {
 
 export async function start(app: Application): Promise<void> {
     await startSerever(app);
-    app.use('',healthRoutes);
+    app.use('/api/v1/notification',healthRoutes);
     await startQueues();
     await startElasticSearch();
 }
