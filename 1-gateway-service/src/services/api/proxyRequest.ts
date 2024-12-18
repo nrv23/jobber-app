@@ -37,17 +37,17 @@ class ProxyService {
       const response = await axios.request(config);
       return response;
     } catch (error) {
-      const customeError = this.handleError(error);
+      const customeError = this.handleError(error, targetUrl);
       log.log('error', `AuthenticationService proxyRequest method() ${customeError.getError().comingFrom}`, customeError);
       throw error;
     }
   }
 
-  private handleError(error: any) {
+  private handleError(error: any, commingFrom: string) {
     const customeError = new BaseError({
       message: error.message || 'Error desconocido',
       statusCode: error.response?.status || 500,
-      commingFrom: 'gateway Service proxyRequest() Method'
+      commingFrom: `gateway Service proxyRequest() ${commingFrom.split('/')[2]}`
     });
 
     return customeError;
