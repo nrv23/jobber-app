@@ -20,7 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "@elastic/elasticsearch": "^8.15.0",
-    "@nrv23/jobber-shared": "^0.0.15",
+    "@nrv23/jobber-shared": "^0.0.16",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "compression": "^1.7.4",

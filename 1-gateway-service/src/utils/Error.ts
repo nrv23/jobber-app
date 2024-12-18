@@ -1,5 +1,5 @@
-import { BadRequestError, CustomError, FileTooLargeError, NotAuthorizedError, NotFoundError, ServerError } from '@nrv23/jobber-shared';
-import { ForbiddenError, MethodNotAllowedError } from '@nrv23/jobber-shared/src/error-handler';
+import { BadRequestError, CustomError, FileTooLargeError, NotAuthorizedError, NotFoundError, ServerError, ForbiddenError, MethodNotAllowedError } from '@nrv23/jobber-shared';
+
 
 interface IBaseError {
     message: string;
@@ -15,6 +15,7 @@ class BaseError {
     }
 
     getError(): CustomError {
+
 
         switch (this.error.statusCode) {
             case 400:

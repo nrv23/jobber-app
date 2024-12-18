@@ -49,10 +49,13 @@ class AuthController {
         proxyHeaders
       );
 
-      return res.status(response.status).json(response.data);
+      res.status(response.status).json(response.data);
     } catch (error: any) {
       const customeError = this.handleError(error);
-      return res.status(customeError.getError().statusCode).json(customeError.getError().serializeErrors());
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
     }
   };
 
@@ -72,11 +75,13 @@ class AuthController {
         targetUrl,
         proxyHeaders
       );
-      return res.status(response.status).json(response.data);
+      res.status(response.status).json(response.data);
     } catch (error) {
-      console.log({ error });
       const customeError = this.handleError(error);
-      return res.status(customeError.getError().statusCode).json(customeError.getError().serializeErrors());
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
     }
   };
 
@@ -95,11 +100,13 @@ class AuthController {
         targetUrl,
         proxyHeaders
       );
-      return res.status(response.status).json(response.data);
+      res.status(response.status).json(response.data);
     } catch (error) {
-      console.log({ error });
       const customeError = this.handleError(error);
-      return res.status(customeError.getError().statusCode).json(customeError.getError().serializeErrors());
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
     }
   };
 
@@ -129,12 +136,14 @@ class AuthController {
         form,
         proxyHeaders
       );
-      return res.status(response.status).json(response.data);
+      res.status(response.status).json(response.data);
 
     } catch (error) {
-      console.log({ error });
       const customeError = this.handleError(error);
-      return res.status(customeError.getError().statusCode).json(customeError.getError().serializeErrors());
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
     }
   };
 
@@ -166,12 +175,14 @@ class AuthController {
         form,
         proxyHeaders
       );
-      return res.status(response.status).json(response.data);
+      res.status(response.status).json(response.data);
 
     } catch (error) {
-      console.log({ error });
       const customeError = this.handleError(error);
-      return res.status(customeError.getError().statusCode).json(customeError.getError().serializeErrors());
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
     }
   };
 
@@ -181,7 +192,7 @@ class AuthController {
     try {
 
       // const response: AxiosResponse = await axiosAuthInstance.put(`/verify-otp/${otp}`, body);
-      //return response;
+      //response;
       // otp: string, body: { browserName: string, deviceType: string }
       
       const { body, headers, params } = req;
@@ -205,19 +216,21 @@ class AuthController {
         form,
         proxyHeaders
       );
-      return res.status(response.status).json(response.data);
+      res.status(response.status).json(response.data);
 
     } catch (error) {
-      console.log({ error });
       const customeError = this.handleError(error);
-      return res.status(customeError.getError().statusCode).json(customeError.getError().serializeErrors());
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
     }
   };
 
    resendEmail= async (req: Request, res: Response) => {
     //const response: AxiosResponse = await axiosAuthInstance.post('/resend-email', data);
     // data: { userId: number, email: string }
-    //return response;
+    //response;
 
     try {
       const { body, headers } = req;
@@ -241,11 +254,14 @@ class AuthController {
         form,
         proxyHeaders
       );
-      return res.status(response.status).json(response.data);
+      res.status(response.status).json(response.data);
     } catch (error) {
       console.log({ error });
       const customeError = this.handleError(error);
-      return res.status(customeError.getError().statusCode).json(customeError.getError().serializeErrors());
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
     }
   };
 
