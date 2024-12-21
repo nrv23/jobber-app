@@ -47,7 +47,7 @@ class ProxyService {
     const customeError = new BaseError({
       message: error.message || 'Error desconocido',
       statusCode: error.response?.status || 500,
-      commingFrom: `gateway Service proxyRequest() ${commingFrom.split('/')[2]}`
+      commingFrom: `gateway Service proxyRequest() ${commingFrom.split('/api').slice(0)}`
     });
 
     return customeError;
