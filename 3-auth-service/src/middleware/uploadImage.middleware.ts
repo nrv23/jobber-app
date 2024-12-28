@@ -50,10 +50,10 @@ export function imageUploadMiddleware(req: Request, res: Response, next: NextFun
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ error: 'File size exceeds the maximum limit of 5 MB.' });
       }
-      return res.status(400).json({ error: 'An error occurred while uploading the file.' });
+      return res.status(500).json({ error: 'An error occurred while uploading the file.' });
     } else if (err) {
       // Manejo de otros errores
-      return res.status(400).json({ error: err.message });
+      return res.status(500).json({ error: err.message });
     }
 
     if (!req.file) {
