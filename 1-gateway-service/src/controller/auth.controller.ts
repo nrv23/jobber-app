@@ -61,6 +61,42 @@ class AuthController {
 
   // nuevas funciones
 
+  siginUser = async (req: Request, res: Response) => {
+
+    try {
+      
+      const { body, headers } = req;
+      const targetUrl = `${services.auth}signin`;
+      const form = new FormData();
+      // Adjunta otros campos del cuerpo
+      for (const key in body) {
+        form.append(key, body[key]);
+      }
+
+      // Configura los encabezados
+      const proxyHeaders = {
+        ...headers,
+        ...form.getHeaders(),
+      };
+
+      // Redirige la solicitud
+      const response = await ProxyService.proxyRequest(
+        'POST',
+        targetUrl,
+        form,
+        proxyHeaders
+      );
+
+      res.status(response.status).json(response.data);
+    } catch (error) {
+      const customeError = this.handleError(error);
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
+    }
+  };
+
   getCurrentUser = async (req: Request, res: Response) => {
     try {
       const { headers } = req;

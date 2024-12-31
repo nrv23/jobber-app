@@ -14,6 +14,7 @@ class AuthRoutes {
 
     public routes(): Router {
         this.router.post('/auth/signup', uploadFile, AuthController.registerUser); // otra forma de llamar una funcion de controlador
+        this.router.post('/auth/signin', AuthController.siginUser); // otra forma de llamar una funcion de controlador
 
         return this.router;
     }
