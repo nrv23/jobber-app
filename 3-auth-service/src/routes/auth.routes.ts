@@ -9,6 +9,10 @@ export function authRoutes(): Router {
     
     router.post('/signup',imageUploadMiddleware, create);
     router.post('/signin', read);
+    router.post('/test', (req, res) => {
+        console.log({body: req.body});
+        res.json({message: 'test'});
+    });
     // /api/auth/v1
     return router;
 }

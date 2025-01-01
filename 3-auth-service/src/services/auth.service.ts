@@ -4,9 +4,8 @@ import { publishDirectMessage } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
 import { firstLetterUppercase, IAuthBuyerMessageDetails, IAuthDocument } from '@nrv23/jobber-shared';
 import { sign } from 'jsonwebtoken';
-import { lowerCase, omit } from 'lodash';
+import { omit, lowerCase } from 'lodash';
 import { Model, Op } from 'sequelize';
-
 
 export async function createAuthUser(data: IAuthDocument): Promise<IAuthDocument> {
 
@@ -58,10 +57,10 @@ export async function getUserByUsername(username: string): Promise<IAuthDocument
 
 export async function getUserByEmail(email: string): Promise<IAuthDocument> {
     const user: Model<IAuthDocument> = await AuthModel.findOne({
-        where: { email: lowerCase(email) }
+        where: { email: email.toLowerCase() }
     }) as Model;
 
-    return user.dataValues;
+    return user?.dataValues;
 }
 
 

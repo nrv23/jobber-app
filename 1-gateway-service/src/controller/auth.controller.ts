@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import FormData from 'form-data';
 import ProxyService, { services } from '@gateway/services/api/proxyRequest';
 import BaseError from '@gateway/utils/Error';
+//import { omit } from 'lodash';
 
 
 /**
@@ -65,26 +66,13 @@ class AuthController {
 
     try {
       
-      const { body, headers } = req;
+      const { body } = req;
       const targetUrl = `${services.auth}signin`;
-      const form = new FormData();
-      // Adjunta otros campos del cuerpo
-      for (const key in body) {
-        form.append(key, body[key]);
-      }
-
-      // Configura los encabezados
-      const proxyHeaders = {
-        ...headers,
-        ...form.getHeaders(),
-      };
-
       // Redirige la solicitud
       const response = await ProxyService.proxyRequest(
         'POST',
         targetUrl,
-        form,
-        proxyHeaders
+        body
       );
 
       res.status(response.status).json(response.data);
@@ -270,7 +258,7 @@ class AuthController {
 
     try {
       const { body, headers } = req;
-      const targetUrl = `${services.auth}resend-email}`;
+      const targetUrl = `${services.auth}resend-email`;
       const form = new FormData();
       // Adjunta otros campos del cuerpo
       for (const key in body) {
@@ -287,7 +275,7 @@ class AuthController {
       const response = await ProxyService.proxyRequest(
         'POST',
         targetUrl,
-        form,
+        body,
         proxyHeaders
       );
       res.status(response.status).json(response.data);
