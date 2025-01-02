@@ -18,6 +18,9 @@ class AuthRoutes {
         this.router.patch('/auth/verify-email', AuthController.verifyEmail); // otra forma de llamar una funcion de controlador
         this.router.patch('/auth/forgot-password', AuthController.forgotPassword); // otra forma de llamar una funcion de controlador
         this.router.patch('/auth/reset-password/:token', AuthController.resetPassword); // otra forma de llamar una funcion de controlador
+        this.router.patch('/auth/change-password', AuthController.changePassword); // otra forma de llamar una funcion de controlador
+        this.router.get('/auth/current-user', AuthController.getCurrentUser); // otra forma de llamar una funcion de controlador
+        this.router.patch('/auth/resend-email', AuthController.resendEmail); // otra forma de llamar una funcion de controlador
 
         return this.router;
     }

@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 
-import { emailSchema, passwordSchema } from '@auth/schemes/password.schema';
+import { changePasswordSchema, emailSchema, passwordSchema } from '@auth/schemes/password.schema';
 import { loginSchema } from '@auth/schemes/signin.schema';
-import { getAuthUserById, getAuthUserByVerificationToken, signToken, updateVerifyEmailField, getUserByEmail, getAuthUserByPasswordToken, updatePassword } from '@auth/services/auth.service';
+import { getAuthUserById, getAuthUserByVerificationToken, signToken, updateVerifyEmailField, getUserByEmail, getAuthUserByPasswordToken, updatePassword, getUserByUsername } from '@auth/services/auth.service';
 import { comparePass } from '@auth/utils/comparePass';
 import { existsUser } from '@auth/utils/existsUser';
 import { handleError } from '@auth/utils/handleError';
@@ -81,7 +81,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
 
         const { email } = req.body;
         const user: IAuthDocument = await getUserByEmail(email);
-        if(!user){
+        if (!user) {
             throw new BadRequestError('Invalid credentials', 'Password forgotPassword() method error');
         }
 
@@ -89,7 +89,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
 
         const randmonBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
         const randomCharacters: string = randmonBytes.toString('hex');
-        const date : Date = new Date();
+        const date: Date = new Date();
         date.setHours(date.getHours() + 1);
 
         // actualiza el tiempo de vigencia del token
@@ -125,16 +125,16 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
             throw new BadRequestError(error.details[0].message, 'Password reset() method error');
         }
 
-        const {password, confirmPassword} = req.body;
+        const { password, confirmPassword } = req.body;
         const { token } = req.params;
 
-        if(password !== confirmPassword){
+        if (password !== confirmPassword) {
             throw new BadRequestError('Passwords do not match', 'Password reset() method error');
         }
 
-        const user : IAuthDocument = await getAuthUserByPasswordToken(token);
+        const user: IAuthDocument = await getAuthUserByPasswordToken(token);
 
-        if(!user){
+        if (!user) {
             throw new BadRequestError('Reset token is expired', 'Password reset() method error');
         }
 
@@ -155,7 +155,114 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
             'Reset password successfuly has been sent to notification service'
         );
         res.status(StatusCodes.OK).json({ message: 'Password successfully updated' });
+
+    } catch (error) {
+        const customError = handleError(error);
+        res.status(customError.getError().statusCode).json(error);
+    }
+
+}
+
+export async function changePassword(req: Request, res: Response): Promise<void> { // usa token
+    try {
+        // debe estar logueado para usar este servicio
+        const { error } = await Promise.resolve(changePasswordSchema.validate(req.body));
+        if (error?.details) {
+            throw new BadRequestError(error.details[0].message, 'Password reset() method error');
+        }
+
+        const { currentPassword, newPassword } = req.body;
+        const user: IAuthDocument = await getUserByUsername(`${req.currentUser?.username}`);
+
+        if (!user) {
+            throw new BadRequestError('Invalid token', 'Password reset() method error');
+        }
+
+        const matched: boolean = await comparePass(currentPassword, user);
+
+        if (!matched) {
+            throw new BadRequestError('Invalid credentials', 'signin read() method error');
+        }
+
+        const passwordHashed = await AuthModel.prototype.hassPassword(newPassword);
+        await updatePassword(user.id!, passwordHashed);
+
+        const messageDetails: IEmailMessageDetails = {
+            username: user.username,
+            template: 'resetPasswordSuccess'
+        };
+
+        // publicar en la cola de mensajes
+        await publishDirectMessage(
+            authChannel,
+            'jobber-email-notification',
+            'auth-email',
+            JSON.stringify(messageDetails),
+            'Password changed successfuly has been sent to notification service'
+        );
+        res.status(StatusCodes.OK).json({ message: 'Password successfully updated' });
+
+    } catch (error) {
+        const customError = handleError(error);
+        res.status(customError.getError().statusCode).json(error);
+    }
+
+}
+// --------------------------------------------------------------------------------------------
+export async function getCurrentUser(req: Request, res: Response): Promise<void> { // usa token
+    try {
+       
+        let existingUser: IAuthDocument | null = null;
+        const user: IAuthDocument = await getAuthUserById(req.currentUser!.id);
+
+        if(!user) {
+            throw new BadRequestError('Invalid username', 'getCurrentUser() method error');
+        }
+
+        if (user && Object.keys(user).length) {
+            existingUser = user;
+        }
+
+        res.status(StatusCodes.OK).json({ message: 'User Authenticated', user: existingUser });
+
+    } catch (error) {
+        const customError = handleError(error);
+        res.status(customError.getError().statusCode).json(error);
+    }
+}
+
+export async function resendEmail(req: Request, res: Response): Promise<void> {
+    try {
+
+        const { email, userId } = req.body;
+        const user : IAuthDocument = await getUserByEmail(email);
+
+        if(!user) {
+            throw new BadRequestError('Invalid email', 'resendEmail() method error');
+        }
         
+        const randmonBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
+        const randomCharacters: string = randmonBytes.toString('hex');
+        await updateVerifyEmailField(user.id!, 0, randomCharacters);
+        const verifyLink = `${config.CLIENT_URL}/confirm_email?v_token=${randomCharacters}`;
+        await updateVerifyEmailField(Number.parseInt(userId), 0, randomCharacters);
+        const messageDetails: IEmailMessageDetails = {
+            receiverEmail: user.email?.toLocaleLowerCase(),
+            verifyLink,
+            template: 'verifyLink'
+        };
+
+        // publicar en la cola de mensajes
+        await publishDirectMessage(
+            authChannel,
+            'jobber-email-notification',
+            'auth-email',
+            JSON.stringify(messageDetails),
+            'Verify email message has been sent to notification service'
+        );
+        const updatedUser = await getAuthUserById(Number.parseInt(userId));
+        res.status(StatusCodes.OK).json({ message: 'Email verification sent', user: updatedUser });
+   
     } catch (error) {
         const customError = handleError(error);
         res.status(customError.getError().statusCode).json(error);

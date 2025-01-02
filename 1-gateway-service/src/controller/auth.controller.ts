@@ -54,7 +54,7 @@ class AuthController {
     } catch (error: any) {
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
@@ -65,7 +65,7 @@ class AuthController {
   siginUser = async (req: Request, res: Response) => {
 
     try {
-      
+
       const { body } = req;
       const targetUrl = `${services.auth}signin`;
       // Redirige la solicitud
@@ -79,31 +79,7 @@ class AuthController {
     } catch (error) {
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
-        statusCode: customeError.getError().statusCode,
-      });
-    }
-  };
-
-  getCurrentUser = async (req: Request, res: Response) => {
-    try {
-      const { headers } = req;
-      const targetUrl = `${services.auth}currentuser`;
-      const proxyHeaders = {
-        ...headers
-      };
-
-      // Redirige la solicitud
-      const response = await ProxyService.proxyRequest(
-        'GET',
-        targetUrl,
-        proxyHeaders
-      );
-      res.status(response.status).json(response.data);
-    } catch (error) {
-      const customeError = this.handleError(error);
-      res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
@@ -128,7 +104,7 @@ class AuthController {
     } catch (error) {
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
@@ -154,7 +130,7 @@ class AuthController {
     } catch (error) {
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
@@ -168,7 +144,7 @@ class AuthController {
       // currentPassword: string, newPassword: string
       const targetUrl = `${services.auth}forgot-password`;
       const { body } = req;
-    
+
       // Redirige la solicitud
       const response = await ProxyService.proxyRequest(
         'PATCH',
@@ -180,7 +156,7 @@ class AuthController {
     } catch (error) {
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
@@ -196,7 +172,7 @@ class AuthController {
       // /verify-email
       // put
       const targetUrl = `${services.auth}verify-email`;
-      const { body } = req;   
+      const { body } = req;
 
       // Redirige la solicitud
       const response = await ProxyService.proxyRequest(
@@ -209,7 +185,7 @@ class AuthController {
     } catch (error) {
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
@@ -223,7 +199,7 @@ class AuthController {
       // const response: AxiosResponse = await axiosAuthInstance.put(`/verify-otp/${otp}`, body);
       //response;
       // otp: string, body: { browserName: string, deviceType: string }
-      
+
       const { body, headers, params } = req;
       const targetUrl = `${services.auth}verify-email/${params['otp']}`;
       const form = new FormData();
@@ -250,45 +226,80 @@ class AuthController {
     } catch (error) {
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
   };
 
-   resendEmail= async (req: Request, res: Response) => {
+  resendEmail = async (req: Request, res: Response) => {
     //const response: AxiosResponse = await axiosAuthInstance.post('/resend-email', data);
     // data: { userId: number, email: string }
     //response;
 
     try {
-      const { body, headers } = req;
+      const { body } = req;
       const targetUrl = `${services.auth}resend-email`;
-      const form = new FormData();
-      // Adjunta otros campos del cuerpo
-      for (const key in body) {
-        form.append(key, body[key]);
-      }
-
-      // Configura los encabezados
-      const proxyHeaders = {
-        ...headers,
-        ...form.getHeaders(),
-      };
 
       // Redirige la solicitud
       const response = await ProxyService.proxyRequest(
-        'POST',
+        'PATCH',
         targetUrl,
-        body,
-        proxyHeaders
+        body
       );
       res.status(response.status).json(response.data);
     } catch (error) {
       console.log({ error });
       const customeError = this.handleError(error);
       res.status(customeError.getError().statusCode).json({
-        message: customeError.getError().message,        
+        message: customeError.getError().message,
+        statusCode: customeError.getError().statusCode,
+      });
+    }
+  };
+
+
+  changePassword = async (req: Request, res: Response) => {
+
+    try {
+
+      // currentPassword: string, newPassword: string
+      const targetUrl = `${services.auth}change-password`;
+      const { body } = req;
+
+      // Redirige la solicitud
+      const response = await ProxyService.proxyRequest(
+        'PATCH',
+        targetUrl,
+        body
+      );
+      res.status(response.status).json(response.data);
+
+    } catch (error) {
+      const customeError = this.handleError(error);
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,
+        statusCode: customeError.getError().statusCode,
+      });
+    }
+  };
+  // nuevas funciones
+  getCurrentUser = async (req: Request, res: Response) => {
+    try {
+      const { headers } = req;
+      const targetUrl = `${services.auth}current-user`;
+      // Redirige la solicitud
+      const response = await ProxyService.proxyRequest(
+        'GET',
+        targetUrl, {}, {
+        'Authorization': headers['authorization']
+      }
+      );
+      res.status(response.status).json(response.data);
+    } catch (error) {
+      const customeError = this.handleError(error);
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,
         statusCode: customeError.getError().statusCode,
       });
     }
