@@ -43,6 +43,7 @@ coverage
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 **/build/Release
+**/src/images
 
 # Dependency directories
 **/node_modules/

@@ -4,8 +4,8 @@ import BaseError from './customError';
 function handleError(error: any) {
     const customeError = new BaseError({
       message: error.message || 'Error desconocido',
-      statusCode: error.response?.status || 500,
-      commingFrom: 'gateway Service registerUser() Method'
+      statusCode: error.statusCode || 500,
+      commingFrom: 'auth service '
     });
 
     return customeError;

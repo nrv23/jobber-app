@@ -134,31 +134,20 @@ class AuthController {
     }
   };
 
-  changePassword = async (req: Request, res: Response) => {
+  resetPassword = async (req: Request, res: Response) => {
 
     try {
 
       // currentPassword: string, newPassword: string
-      const targetUrl = `${services.auth}change-password`;
-      const { body, headers } = req;
-      const form = new FormData();
-      // Adjunta otros campos del cuerpo
-      for (const key in body) {
-        form.append(key, body[key]);
-      }
-
-      // Configura los encabezados
-      const proxyHeaders = {
-        ...headers,
-        ...form.getHeaders(),
-      };
-
+      const { token } = req.params;
+      const targetUrl = `${services.auth}reset-password/${token}`;
+      const { body } = req;
+      ;
       // Redirige la solicitud
       const response = await ProxyService.proxyRequest(
-        'PUT',
+        'PATCH',
         targetUrl,
-        form,
-        proxyHeaders
+        body
       );
       res.status(response.status).json(response.data);
 
@@ -171,6 +160,34 @@ class AuthController {
     }
   };
 
+  //
+  forgotPassword = async (req: Request, res: Response) => {
+
+    try {
+
+      // currentPassword: string, newPassword: string
+      const targetUrl = `${services.auth}forgot-password`;
+      const { body } = req;
+    
+      // Redirige la solicitud
+      const response = await ProxyService.proxyRequest(
+        'PATCH',
+        targetUrl,
+        body
+      );
+      res.status(response.status).json(response.data);
+
+    } catch (error) {
+      const customeError = this.handleError(error);
+      res.status(customeError.getError().statusCode).json({
+        message: customeError.getError().message,        
+        statusCode: customeError.getError().statusCode,
+      });
+    }
+  };
+
+
+  //
   verifyEmail = async (req: Request, res: Response) => {
 
 
@@ -179,25 +196,13 @@ class AuthController {
       // /verify-email
       // put
       const targetUrl = `${services.auth}verify-email`;
-      const { body, headers } = req;
-      const form = new FormData();
-      // Adjunta otros campos del cuerpo
-      for (const key in body) {
-        form.append(key, body[key]);
-      }
-
-      // Configura los encabezados
-      const proxyHeaders = {
-        ...headers,
-        ...form.getHeaders(),
-      };
+      const { body } = req;   
 
       // Redirige la solicitud
       const response = await ProxyService.proxyRequest(
-        'PUT',
+        'PATCH',
         targetUrl,
-        form,
-        proxyHeaders
+        body
       );
       res.status(response.status).json(response.data);
 
@@ -291,9 +296,9 @@ class AuthController {
 
   private handleError(error: any) {
     const customeError = new BaseError({
-      message: error.message || 'Error desconocido',
+      message: error.response.statusText || 'Error desconocido',
       statusCode: error.response?.status || 500,
-      commingFrom: 'gateway Service registerUser() Method'
+      commingFrom: 'gateway Service'
     });
 
     return customeError;

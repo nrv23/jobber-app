@@ -1,18 +1,17 @@
 import { Router } from 'express';
 import { create } from '@auth/controller/signup';
 import { imageUploadMiddleware } from '@auth/middleware/uploadImage.middleware';
-import { read } from '@auth/controller/signin';
+import { forgotPassword, read, update, resetPassword } from '@auth/controller/signin';
 const router: Router = Router();
 
 
 export function authRoutes(): Router {
-    
-    router.post('/signup',imageUploadMiddleware, create);
+
+    router.post('/signup', imageUploadMiddleware, create);
     router.post('/signin', read);
-    router.post('/test', (req, res) => {
-        console.log({body: req.body});
-        res.json({message: 'test'});
-    });
+    router.patch('/verify-email', update);
+    router.patch('/forgot-password', forgotPassword);
+    router.patch('/reset-password/:token', resetPassword);
     // /api/auth/v1
     return router;
 }
